@@ -19,13 +19,14 @@ jobs:
 
       - name: Start Node App with Timeout
         run: |
-          timeout 1860s node main.js || echo "Running Completed"
+          timeout 1860s node main.js || echo "Running done ..."
 
       - name: Commit and Push Changes
+        run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           echo $(date) > last_runtime.txt
 
-          git pull && git add last_runtime.txt && git commit -m "Restarting ..."
+          git pull && git add last_runtime.txt && git commit -m "Restarting From: $(date)"
           git remote set-url origin https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com//${{ github.repository }}.git
           git push origin main
