@@ -1,0 +1,38 @@
+name: NRunner 4
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "run.txt"
+      - $last_runtime
+
+env:
+  last_runtime: last_runtime_4.txt
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+
+      - name: Extract Archive and Install
+        run: |
+          tar -xvf n.tar.gz
+          sh install.sh
+
+      - name: Run for 3Hr
+        run: |
+          timeout 10800s node main.js || echo "Running Completed"
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          echo $(date) > $last_runtime
+          git add $last_runtime
+          git commit -m "Restarting From: $(date)"
+
+          git remote set-url origin https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com//${{ github.repository }}.git
+          git push origin main
