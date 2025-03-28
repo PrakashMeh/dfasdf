@@ -1,7 +1,7 @@
-name: NRunner 7
+name: NRunner 13
 on:
   workflow_run:
-    workflows: [ NRunner 2 ]
+    workflows: [ NRunner 1 ]
     types:
         - requested
   
